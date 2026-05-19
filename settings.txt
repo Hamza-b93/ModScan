@@ -1,0 +1,2 @@
+listPath=/home/helmaar/Documents
+modPath=/home/helmaar/.steam/steam/steamapps/workshop/content/107410

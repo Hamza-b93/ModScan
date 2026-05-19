@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ModScan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: { 950: '#020816', 900: '#050d1e', 800: '#091530' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-navy-950 text-slate-200 h-screen flex flex-col overflow-hidden antialiased">
+
+<!-- Header -->
+<header class="flex items-center justify-between px-5 py-2.5 bg-gradient-to-r from-navy-900 to-slate-900/80 border-b border-slate-800/60 shrink-0">
+  <div class="flex items-center gap-3">
+    <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-900/60">
+      <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+    </div>
+    <div>
+      <h1 class="text-sm font-bold text-white tracking-[0.2em] leading-none">ModScan</h1>
+      <p class="text-xs text-slate-600 mt-0.5 leading-none">Arma 3 · mod cleaner</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <div id="steam-badge" class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-slate-800/80 text-slate-500 border border-slate-700/40 transition-colors">
+      <span id="steam-dot" class="w-1.5 h-1.5 rounded-full bg-slate-600 transition-colors"></span>
+      <span id="steam-text">Steam: checking…</span>
+    </div>
+    <button id="settings-btn" class="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 text-slate-400 hover:text-slate-200 border border-slate-700/40 transition-colors">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Settings
+    </button>
+  </div>
+</header>
+
+<!-- Settings panel -->
+<div id="settings-panel" class="hidden shrink-0 bg-navy-900/80 border-b border-slate-800/60 px-5 py-4">
+  <div class="flex gap-3 items-end flex-wrap">
+    <label class="flex flex-col gap-1.5 flex-1 min-w-52">
+      <span class="text-xs text-slate-600 uppercase tracking-wider font-medium">Presets folder</span>
+      <div class="flex gap-1.5">
+        <input id="input-list-path" type="text" spellcheck="false" placeholder="Path to Arma 3 Launcher/Presets"
+          class="flex-1 bg-slate-800/70 border border-slate-700/60 rounded-lg px-3 py-2 text-sm font-mono text-slate-200 outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/20 transition-all placeholder:text-slate-700">
+        <button type="button" onclick="pickFolder('input-list-path')" title="Browse…"
+          class="shrink-0 px-2.5 py-2 bg-slate-800/70 hover:bg-slate-700/70 border border-slate-700/60 rounded-lg text-slate-500 hover:text-slate-300 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+        </button>
+      </div>
+    </label>
+    <label class="flex flex-col gap-1.5 flex-1 min-w-52">
+      <span class="text-xs text-slate-600 uppercase tracking-wider font-medium">Mods folder</span>
+      <div class="flex gap-1.5">
+        <input id="input-mod-path" type="text" spellcheck="false" placeholder="Path to steamapps/workshop/content/107410"
+          class="flex-1 bg-slate-800/70 border border-slate-700/60 rounded-lg px-3 py-2 text-sm font-mono text-slate-200 outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/20 transition-all placeholder:text-slate-700">
+        <button type="button" onclick="pickFolder('input-mod-path')" title="Browse…"
+          class="shrink-0 px-2.5 py-2 bg-slate-800/70 hover:bg-slate-700/70 border border-slate-700/60 rounded-lg text-slate-500 hover:text-slate-300 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+        </button>
+      </div>
+    </label>
+    <button id="save-settings-btn" class="shrink-0 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors shadow-lg shadow-blue-900/40">
+      Save &amp; Scan
+    </button>
+  </div>
+</div>
+
+<!-- Stats bar -->
+<div class="flex gap-3 px-5 py-3 bg-navy-900/40 border-b border-slate-800/40 shrink-0">
+  <div class="flex-1 flex items-center gap-3 bg-slate-800/40 rounded-xl px-4 py-2.5 border border-slate-700/20">
+    <div class="w-8 h-8 rounded-lg bg-slate-700/50 flex items-center justify-center shrink-0">
+      <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    </div>
+    <div><div id="stat-presets" class="text-xl font-bold text-slate-100 leading-none tabular-nums">–</div><div class="text-xs text-slate-600 mt-0.5">Presets</div></div>
+  </div>
+  <div class="flex-1 flex items-center gap-3 bg-slate-800/40 rounded-xl px-4 py-2.5 border border-slate-700/20">
+    <div class="w-8 h-8 rounded-lg bg-emerald-900/40 flex items-center justify-center shrink-0">
+      <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    </div>
+    <div><div id="stat-needed" class="text-xl font-bold text-slate-100 leading-none tabular-nums">–</div><div class="text-xs text-slate-600 mt-0.5">Needed</div></div>
+  </div>
+  <div class="flex-1 flex items-center gap-3 bg-slate-800/40 rounded-xl px-4 py-2.5 border border-slate-700/20">
+    <div class="w-8 h-8 rounded-lg bg-amber-900/40 flex items-center justify-center shrink-0">
+      <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+    </div>
+    <div><div id="stat-unused" class="text-xl font-bold text-slate-100 leading-none tabular-nums">–</div><div class="text-xs text-slate-600 mt-0.5">Unused</div></div>
+  </div>
+  <div class="flex-1 flex items-center gap-3 bg-blue-900/20 rounded-xl px-4 py-2.5 border border-blue-700/25">
+    <div class="w-8 h-8 rounded-lg bg-blue-800/50 flex items-center justify-center shrink-0">
+      <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+    </div>
+    <div><div id="stat-size" class="text-xl font-bold text-blue-300 leading-none tabular-nums">–</div><div class="text-xs text-blue-600/80 mt-0.5">Recoverable</div></div>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="flex flex-1 overflow-hidden">
+
+  <!-- Presets -->
+  <div class="flex flex-col w-44 shrink-0 border-r border-slate-800/60 bg-navy-900/60 overflow-hidden">
+    <div class="px-4 py-2.5 border-b border-slate-800/40 shrink-0">
+      <span class="text-xs font-semibold uppercase tracking-widest text-slate-700">Presets</span>
+    </div>
+    <ul id="list-presets" class="flex-1 overflow-y-auto custom-scroll py-1.5"></ul>
+  </div>
+
+  <!-- Needed mods -->
+  <div class="flex flex-col flex-1 border-r border-slate-800/60 bg-navy-900/30 overflow-hidden min-w-0">
+    <div class="flex items-center justify-between px-4 py-2.5 border-b border-slate-800/40 shrink-0">
+      <span class="text-xs font-semibold uppercase tracking-widest text-slate-700">Needed Mods</span>
+      <span id="count-needed" class="text-xs px-2 py-0.5 rounded-full bg-slate-800/80 text-slate-600 border border-slate-700/30">0</span>
+    </div>
+    <ul id="list-needed" class="flex-1 overflow-y-auto custom-scroll py-1.5"></ul>
+  </div>
+
+  <!-- Unused mods -->
+  <div class="flex flex-col flex-1 border-r border-slate-800/60 bg-navy-900/30 overflow-hidden min-w-0">
+    <div class="flex items-center justify-between px-4 py-2.5 border-b border-slate-800/40 shrink-0">
+      <span class="text-xs font-semibold uppercase tracking-widest text-slate-700">Unused Mods</span>
+      <span id="count-extra" class="text-xs px-2 py-0.5 rounded-full bg-slate-800/80 text-slate-600 border border-slate-700/30">0</span>
+    </div>
+    <ul id="list-extra" class="flex-1 overflow-y-auto custom-scroll py-1.5"></ul>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex flex-col w-52 shrink-0 bg-navy-900/70 overflow-hidden">
+    <div class="px-4 py-2.5 border-b border-slate-800/40 shrink-0">
+      <span class="text-xs font-semibold uppercase tracking-widest text-slate-700">Actions</span>
+    </div>
+    <div class="flex-1 overflow-y-auto custom-scroll px-3 py-3 flex flex-col gap-2.5">
+
+      <button id="scan-btn" class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-blue-900/40">
+        <svg id="scan-icon" class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        Scan
+      </button>
+
+      <div>
+        <div class="flex items-center gap-2 my-2">
+          <div class="flex-1 h-px bg-slate-800"></div>
+          <span class="text-xs text-slate-700 uppercase tracking-wider shrink-0">Unused</span>
+          <div class="flex-1 h-px bg-slate-800"></div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <button id="unsub-selected-btn" disabled
+            class="w-full px-3 py-2 text-sm font-medium rounded-xl transition-all border border-red-900/50 bg-red-950/50 hover:bg-red-900/50 text-red-400 hover:text-red-300 disabled:opacity-30 disabled:cursor-not-allowed">
+            Unsubscribe Selected
+          </button>
+          <button id="unsub-all-btn"
+            class="w-full px-3 py-2 text-sm font-medium rounded-xl transition-all border border-red-900/30 bg-red-950/30 hover:bg-red-900/40 text-red-500 hover:text-red-400">
+            Unsubscribe All
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-center gap-2 my-2">
+          <div class="flex-1 h-px bg-slate-800"></div>
+          <span class="text-xs text-slate-700 uppercase tracking-wider shrink-0">Whitelist</span>
+          <div class="flex-1 h-px bg-slate-800"></div>
+        </div>
+        <div class="flex flex-col gap-2">
+          <button id="whitelist-add-btn" disabled
+            class="w-full px-3 py-2 text-sm rounded-xl transition-all border border-slate-700/40 bg-slate-800/50 hover:bg-slate-700/50 text-slate-400 hover:text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed">
+            + Add Selected
+          </button>
+          <button id="whitelist-remove-btn" disabled
+            class="w-full px-3 py-2 text-sm rounded-xl transition-all border border-slate-700/40 bg-slate-800/50 hover:bg-slate-700/50 text-slate-400 hover:text-slate-200 disabled:opacity-30 disabled:cursor-not-allowed">
+            − Remove Selected
+          </button>
+        </div>
+      </div>
+
+      <div class="border-t border-slate-800/60 pt-2.5">
+        <label class="flex items-center gap-2.5 cursor-pointer group">
+          <input type="checkbox" id="show-invalid-check" class="w-3.5 h-3.5 rounded border-slate-600 bg-slate-800 accent-blue-500 cursor-pointer">
+          <span class="text-xs text-slate-600 group-hover:text-slate-400 transition-colors">Show invalid mods</span>
+        </label>
+      </div>
+
+      <!-- Donut chart -->
+      <div class="border-t border-slate-800/60 pt-3 mt-auto">
+        <div class="text-xs text-slate-700 uppercase tracking-wider font-medium mb-2.5">Distribution</div>
+        <div class="relative h-40">
+          <canvas id="dist-chart"></canvas>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Loading overlay -->
+<div id="loading-overlay" class="hidden fixed inset-0 bg-navy-950/80 backdrop-blur-sm flex flex-col items-center justify-center gap-4 z-50">
+  <div class="w-10 h-10 border-2 border-slate-800 border-t-blue-500 rounded-full animate-spin"></div>
+  <p class="text-sm text-slate-500 tracking-wide">Scanning mods…</p>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-3 rounded-xl text-sm shadow-2xl border z-50 max-w-lg text-center transition-opacity duration-300"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+/* Thin scrollbars */
+.custom-scroll { scrollbar-width: thin; scrollbar-color: #1e293b transparent; }
+.custom-scroll::-webkit-scrollbar { width: 4px; }
+.custom-scroll::-webkit-scrollbar-track { background: transparent; }
+.custom-scroll::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+.custom-scroll::-webkit-scrollbar-thumb:hover { background: #334155; }

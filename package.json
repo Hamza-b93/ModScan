@@ -1,0 +1,24 @@
+{
+  "name": "modscan",
+  "version": "1.0.0",
+  "main": "server.js",
+  "bin": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build:win":   "pkg . --targets node18-win-x64   --output dist/modscan-win.exe",
+    "build:linux": "pkg . --targets node18-linux-x64 --output dist/modscan-linux",
+    "build:native": "pkg . --output dist/modscan"
+  },
+  "pkg": {
+    "assets": [
+      "public/**/*"
+    ]
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "steamworks.js": "^0.3.1"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
+  }
+}
