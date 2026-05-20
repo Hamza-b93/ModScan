@@ -69,6 +69,12 @@ app.post('/api/unsubscribe', async (req, res) => {
         const results   = await steam.unsubscribeItems(ids);
         const succeeded = results.filter(r => r.success).map(r => r.id);
         succeeded.forEach(id => unsubbed.add(id));
+
+        if (succeeded.length) {
+            await io.deleteModFolders(succeeded);
+            io.removeIdsFromAcf(succeeded);
+        }
+
         res.json({ results });
     } catch (err) {
         console.error('[ERR]', err);

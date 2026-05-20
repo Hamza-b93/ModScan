@@ -176,6 +176,59 @@ function fmtSize(bytes) {
     return Math.round(bytes / 1e3) + ' KB';
 }
 
+// ---------- Unsubscribe helpers ----------
+
+async function deleteModFolders(ids) {
+    const deleted = [];
+    for (const id of ids) {
+        const dir = path.join(modPath, String(id));
+        try {
+            await fsP.rm(dir, { recursive: true, force: true });
+            deleted.push(id);
+        } catch (err) {
+            console.warn(`[IO] Could not delete ${dir}:`, err.message);
+        }
+    }
+    return deleted;
+}
+
+function removeIdsFromAcf(ids) {
+    // appworkshop_107410.acf lives two levels above modPath (workshop/content/107410 → workshop/)
+    const acfPath = path.join(modPath, '..', '..', 'appworkshop_107410.acf');
+    if (!fs.existsSync(acfPath)) return;
+
+    const toRemove = new Set(ids.map(String));
+    const lines = fs.readFileSync(acfPath, 'utf-8').split('\n');
+    const out = [];
+    let i = 0;
+
+    while (i < lines.length) {
+        const trimmed = lines[i].trim();
+        const m = trimmed.match(/^"(\d+)"$/);
+        if (m && toRemove.has(m[1])) {
+            // Skip this ID line and its following { ... } block
+            i++;
+            while (i < lines.length && lines[i].trim() !== '{') i++;
+            if (i < lines.length) {
+                i++; // skip opening {
+                let depth = 1;
+                while (i < lines.length && depth > 0) {
+                    const t = lines[i].trim();
+                    if (t === '{') depth++;
+                    else if (t === '}') depth--;
+                    i++;
+                }
+            }
+        } else {
+            out.push(lines[i]);
+            i++;
+        }
+    }
+
+    fs.writeFileSync(acfPath, out.join('\n'), 'utf-8');
+    console.log(`[IO] Removed ${ids.length} item(s) from appworkshop_107410.acf`);
+}
+
 function readWhitelist() {
     const wl = {};
     if (!fs.existsSync(WHITELIST_FILE)) return wl;
@@ -227,4 +280,5 @@ module.exports = {
     loadSettings, saveSettings, currentPaths,
     scanPresets, scanAllMods, readWhitelist,
     addToWhitelist, removeFromWhitelist, fmtSize,
+    deleteModFolders, removeIdsFromAcf,
 };

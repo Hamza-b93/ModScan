@@ -1,2 +1,2 @@
-listPath=/home/helmaar/Documents
-modPath=/home/helmaar/.steam/steam/steamapps/workshop/content/107410
+listPath=/home/helmaar/Downloads/ARMA-3-Presets
+modPath=/mnt/Laptop-Drive/SteamLibrary/steamapps/workshop/content/107410
