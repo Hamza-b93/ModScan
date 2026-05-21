@@ -1,14 +1,14 @@
 # Arma 3 Mod Cleaner
 
-A local web app that scans your Arma 3 launcher presets, identifies mods you have installed but no longer use in any preset, and lets you unsubscribe and delete them in bulk.
+A local web application that scans your Arma 3 launcher presets, identifies mods you have installed but no longer use in any preset, and lets you unsubscribe and delete them in bulk.
 
 ---
 
 ## How It Works
 
-The app reads your Arma 3 launcher preset files (`.html` or `.preset2`) to build a list of mods you actively use. It then compares that list against every mod folder in your Steam Workshop directory for Arma 3. Any mod that does not appear in any selected preset (and is not on your whitelist) is shown as **unused**.
+The application reads your Arma 3 launcher preset files (`.html` or `.preset2`) to build a list of mods you actively use. It then compares that list against every mod folder in your Steam Workshop directory for Arma 3. Any mod that does not appear in any selected preset (and is not on your whitelist) is shown as **unused**.
 
-When you unsubscribe from unused mods the app:
+When you unsubscribe from unused mods the application:
 
 1. Calls the Steam Workshop API to remove the subscription from your Steam account.
 2. Deletes the mod folder from disk immediately — you see the space freed right away.
@@ -81,8 +81,8 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Requirements
 
-- Steam must be running before you start the app
-- Arma 3 must **not** be running when you use the app (Steam will otherwise block workshop changes)
+- Steam must be running before you start the application
+- Arma 3 must **not** be running when you use the application (Steam will otherwise block workshop changes)
 
 ---
 
@@ -90,9 +90,9 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### 1. Start Steam first
 
-Make sure Steam is fully open and logged in before launching the app.
+Make sure Steam is fully open and logged in before launching the application.
 
-### 2. Open the app
+### 2. Open the application
 
 Follow Option A or Option B above. Once running, the terminal will print:
 
@@ -146,13 +146,13 @@ To remove a mod from the whitelist, select it in the preset panel and click **Re
 
 ### 7. Unsubscribe
 
-Click **Unsubscribe Selected** (or **Unsubscribe All**) and confirm the prompt. The app processes each mod one at a time. When done, it rescans automatically and the freed space is reflected in the stats bar.
+Click **Unsubscribe Selected** (or **Unsubscribe All**) and confirm the prompt. The application processes each mod one at a time. When done, it rescans automatically and the freed space is reflected in the stats bar.
 
-### 8. Stop the app BEFORE closing Steam
+### 8. Stop the application BEFORE closing Steam
 
 > **Important:** Always stop the Node.js server before closing Steam.
 >
-> Because the app initialises the Steam API using Arma 3's app ID, Steam shows Arma 3 as "running" while the server is active. If you close Steam while the server is still running, Steam can crash (SIGSEGV in its internal thread). The correct shutdown order is:
+> Because the application initialises the Steam API using Arma 3's application ID, Steam shows Arma 3 as "running" while the server is active. If you close Steam while the server is still running, Steam can crash (SIGSEGV in its internal thread). The correct shutdown order is:
 >
 > 1. Close the browser tab.
 > 2. Stop the server (`Ctrl+C` in the terminal, or close the terminal window).
@@ -188,7 +188,7 @@ ModScan/
 │   └── io.js          # Preset scanning, mod folder ops, ACF editing
 ├── public/
 │   ├── index.html     # UI
-│   └── app.js         # Frontend logic
+│   └── application.js         # Frontend logic
 ├── settings.txt       # Saved paths (auto-generated)
 ├── whitelist.txt      # Whitelisted mods (auto-generated)
 ├── steam_appid.txt    # Tells steamworks.js to use Arma 3 (107410)
@@ -201,16 +201,16 @@ ModScan/
 ## Troubleshooting
 
 **"Steam not initialized — make sure Steam is running"**
-Steam was not open when the server started, or it crashed. Start (or restart) Steam and try again — the app will reconnect automatically without needing a server restart.
+Steam was not open when the server started, or it crashed. Start (or restart) Steam and try again — the application will reconnect automatically without needing a server restart.
 
 **Mods still appear after unsubscribing**
-This should no longer happen as the app deletes the folders and updates the ACF file. If you see a mod return, check that the mod folder path in Settings points to the correct `workshop/content/107410` directory.
+This should no longer happen as the application deletes the folders and updates the ACF file. If you see a mod return, check that the mod folder path in Settings points to the correct `workshop/content/107410` directory.
 
 **Mod folder size does not change immediately**
-The size shown in the OS may be cached. The app calculates size itself and will show the correct values after the next scan.
+The size shown in the OS may be cached. The application calculates size itself and will show the correct values after the next scan.
 
 **Steam crashes when closing it**
-You closed Steam while the server was still running. See the shutdown order in [step 8](#8-stop-the-app-before-closing-steam) above.
+You closed Steam while the server was still running. See the shutdown order in [step 8](#8-stop-the-application-before-closing-steam) above.
 
 **Folder picker does not open (Linux)**
 Install `zenity` (GTK) or `kdialog` (KDE):
