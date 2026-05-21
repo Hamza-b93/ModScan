@@ -1,12 +1,12 @@
-# Arma 3 Mod Cleaner
+# ARMA 3 Mod Cleaner
 
-A local web application that scans your Arma 3 launcher presets, identifies mods you have installed but no longer use in any preset, and lets you unsubscribe and delete them in bulk.
+A local web application that scans your ARMA 3 launcher presets, identifies mods you have installed but no longer use in any preset, and lets you unsubscribe and delete them in bulk.
 
 ---
 
 ## How It Works
 
-The application reads your Arma 3 launcher preset files (`.html` or `.preset2`) to build a list of mods you actively use. It then compares that list against every mod folder in your Steam Workshop directory for Arma 3. Any mod that does not appear in any selected preset (and is not on your whitelist) is shown as **unused**.
+The application reads your ARMA 3 launcher preset files (`.html` or `.preset2`) to build a list of mods you actively use. It then compares that list against every mod folder in your Steam Workshop directory for ARMA 3. Any mod that does not appear in any selected preset (and is not on your whitelist) is shown as **unused**.
 
 When you unsubscribe from unused mods the application:
 
@@ -82,7 +82,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## Requirements
 
 - Steam must be running before you start the application
-- Arma 3 must **not** be running when you use the application (Steam will otherwise block workshop changes)
+- ARMA 3 must **not** be running when you use the application (Steam will otherwise block workshop changes)
 
 ---
 
@@ -97,7 +97,7 @@ Make sure Steam is fully open and logged in before launching the application.
 Follow Option A or Option B above. Once running, the terminal will print:
 
 ```
-Arma 3 Mod Cleaner → http://localhost:3000
+ARMA 3 Mod Cleaner → http://localhost:3000
 ```
 
 Open that URL in your browser.
@@ -109,17 +109,17 @@ Click the **Settings** button (top right) and set:
 | Setting | What it should point to |
 |---|---|
 | **Preset folder** | The folder containing your `.html` or `.preset2` launcher presets |
-| **Mod folder** | The Steam Workshop content folder for Arma 3 (see defaults below) |
+| **Mod folder** | The Steam Workshop content folder for ARMA 3 (see defaults below) |
 
 **Default paths — Linux (native Steam):**
 ```
-Presets: ~/.local/share/Steam/steamapps/compatdata/107410/pfx/drive_c/users/steamuser/AppData/Local/Arma 3 Launcher/Presets
+Presets: ~/.local/share/Steam/steamapps/compatdata/107410/pfx/drive_c/users/steamuser/AppData/Local/ARMA 3 Launcher/Presets
 Mods:    ~/.local/share/Steam/steamapps/workshop/content/107410
 ```
 
 **Default paths — Windows:**
 ```
-Presets: %LOCALAPPDATA%\Arma 3 Launcher\Presets
+Presets: %LOCALAPPDATA%\ARMA 3 Launcher\Presets
 Mods:    C:\Program Files (x86)\Steam\steamapps\workshop\content\107410
 ```
 
@@ -152,7 +152,7 @@ Click **Unsubscribe Selected** (or **Unsubscribe All**) and confirm the prompt. 
 
 > **Important:** Always stop the Node.js server before closing Steam.
 >
-> Because the application initialises the Steam API using Arma 3's application ID, Steam shows Arma 3 as "running" while the server is active. If you close Steam while the server is still running, Steam can crash (SIGSEGV in its internal thread). The correct shutdown order is:
+> Because the application initialises the Steam API using ARMA 3's application ID, Steam shows ARMA 3 as "running" while the server is active. If you close Steam while the server is still running, Steam can crash (SIGSEGV in its internal thread). The correct shutdown order is:
 >
 > 1. Close the browser tab.
 > 2. Stop the server (`Ctrl+C` in the terminal, or close the terminal window).
@@ -191,7 +191,7 @@ ModScan/
 │   └── application.js         # Frontend logic
 ├── settings.txt       # Saved paths (auto-generated)
 ├── whitelist.txt      # Whitelisted mods (auto-generated)
-├── steam_appid.txt    # Tells steamworks.js to use Arma 3 (107410)
+├── steam_appid.txt    # Tells steamworks.js to use ARMA 3 (107410)
 ├── start.sh           # Linux launcher
 └── start.bat          # Windows launcher
 ```
