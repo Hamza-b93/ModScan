@@ -223,6 +223,12 @@ sudo apt install zenity
 
 ---
 
+## Acknowledgements
+
+Inspired by [arma-3-mod-cleaner](https://gitlab.com/Alexein/arma-3-mod-cleaner) by Alexein.
+
+---
+
 ## License
 
 See [LICENSE](LICENSE).
