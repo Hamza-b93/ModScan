@@ -27,7 +27,7 @@ When you unsubscribe from unused mods the app:
 ## Installation
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/Hamza-b93/ModScan.git
 cd ModScan
 npm install
 ```
