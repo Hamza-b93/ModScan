@@ -16,21 +16,73 @@ When you unsubscribe from unused mods the app:
 
 ---
 
-## Requirements
+## Getting Started
 
-- [Node.js](https://nodejs.org/) v18 or newer (v26 recommended via [Volta](https://volta.sh/))
-- Steam must be running before you start the app
-- Arma 3 must **not** be running when you use the app (Steam will otherwise block workshop changes)
+There are two ways to run ModScan: download a pre-built binary (no Node.js needed), or run from source with Node.js.
 
 ---
 
-## Installation
+## Option A — Pre-built binary (recommended)
+
+No Node.js or git required.
+
+1. Go to the [Releases](https://github.com/Hamza-b93/ModScan/releases) page and download the file for your OS:
+   - **Linux:** `modscan-linux`
+   - **Windows:** `modscan-win.exe`
+
+2. **Linux only** — make the file executable:
+   ```bash
+   chmod +x modscan-linux
+   ```
+
+3. Start Steam, then run the binary:
+
+   **Linux:**
+   ```bash
+   ./modscan-linux
+   ```
+
+   **Windows:** double-click `modscan-win.exe`, or run it from a terminal.
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+> **Note:** On Windows, SmartScreen may warn about an unknown publisher. Click **More info → Run anyway** to proceed.
+
+---
+
+## Option B — Run from source
+
+Requires [Node.js](https://nodejs.org/) v18 or newer.
 
 ```bash
 git clone https://github.com/Hamza-b93/ModScan.git
 cd ModScan
 npm install
 ```
+
+Start Steam, then:
+
+**Linux:**
+```bash
+npm start
+# or
+./start.sh
+```
+
+**Windows:**
+```
+npm start
+```
+or double-click `start.bat`.
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## Requirements
+
+- Steam must be running before you start the app
+- Arma 3 must **not** be running when you use the app (Steam will otherwise block workshop changes)
 
 ---
 
@@ -40,23 +92,10 @@ npm install
 
 Make sure Steam is fully open and logged in before launching the app.
 
-### 2. Start the app
+### 2. Open the app
 
-**Linux:**
-```bash
-./start.sh
-# or
-npm start
-```
+Follow Option A or Option B above. Once running, the terminal will print:
 
-**Windows:**
-```
-start.bat
-# or
-npm start
-```
-
-The app will print:
 ```
 Arma 3 Mod Cleaner → http://localhost:3000
 ```
