@@ -5,8 +5,9 @@ const fsP  = require('fs').promises;
 const path = require('path');
 const os   = require('os');
 
-const SETTINGS_FILE = path.join(__dirname, '..', 'settings.txt');
-const WHITELIST_FILE = path.join(__dirname, '..', 'whitelist.txt');
+const DATA_DIR = process.pkg ? path.dirname(process.execPath) : path.join(__dirname, '..');
+const SETTINGS_FILE = path.join(DATA_DIR, 'settings.txt');
+const WHITELIST_FILE = path.join(DATA_DIR, 'whitelist.txt');
 
 let listPath = '';
 let modPath  = '';
