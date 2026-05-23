@@ -97,6 +97,7 @@ function updateSteamBadge(steam) {
         badge.title      = steam.error || '';
         badge.classList.remove('text-slate-500');
         badge.classList.add('text-red-400');
+        if (steam.error) toast('Steam error: ' + steam.error, 'error');
     }
 }
 

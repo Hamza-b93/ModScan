@@ -11,7 +11,8 @@
   },
   "pkg": {
     "assets": [
-      "public/**/*"
+      "public/**/*",
+      "node_modules/steamworks.js/dist/**/*"
     ]
   },
   "dependencies": {

@@ -17,6 +17,7 @@ function tryInit() {
         steamError = err.message;
         client = null;
         steamReady = false;
+        console.warn('[Steam] Init failed:', err.message);
     }
     return steamReady;
 }
