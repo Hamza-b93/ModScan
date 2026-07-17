@@ -5,8 +5,8 @@
   "bin": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build:win": "pkg . --targets node18-win-x64   --output dist/modscan-win.exe",
-    "build:linux": "pkg . --targets node18-linux-x64 --output dist/modscan-linux",
+    "build:win": "pkg . --targets node20-win-x64   --output dist/modscan-win.exe",
+    "build:linux": "pkg . --targets node20-linux-x64 --output dist/modscan-linux",
     "build:native": "pkg . --output dist/modscan"
   },
   "pkg": {
@@ -19,10 +19,13 @@
     "express": "^4.18.2",
     "steamworks.js": "^0.3.1"
   },
-  "devDependencies": {
-    "pkg": "^5.8.1"
-  },
   "volta": {
     "node": "26.2.0"
+  },
+  "devDependencies": {
+    "@yao-pkg/pkg": "^6.21.0"
+  },
+  "overrides": {
+    "@yao-pkg/pkg-fetch": "3.5.30"
   }
 }
