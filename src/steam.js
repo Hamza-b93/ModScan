@@ -49,13 +49,4 @@ async function unsubscribeItems(workshopIds) {
     return results;
 }
 
-function getSubscribedItems() {
-    if (!tryInit()) return [];
-    try {
-        return client.workshop.getSubscribedItems().map(id => id.toString());
-    } catch (_) {
-        return [];
-    }
-}
-
-module.exports = { init, status, unsubscribeItems, getSubscribedItems };
+module.exports = { init, status, unsubscribeItems };
