@@ -94,13 +94,32 @@ Make sure Steam is fully open and logged in before launching the application.
 
 ### 2. Open the application
 
-Follow Option A or Option B above. Once running, the terminal will print:
+Follow Option A or Option B above. On **every** launch the application asks two questions in the terminal:
 
 ```
-ARMA 3 Mod Cleaner → http://localhost:3000
+Port to run on [3000]:
+Open in browser (default/firefox/chrome/chromium/edge/brave/none) [default]:
 ```
 
-Open that URL in your browser.
+- **Port** — press Enter for the default `3000`, or type another port (1–65535). If the port is already in use, the application tells you and exits so you can pick a different one.
+- **Browser** — press Enter to open your system default browser, type a specific browser (`firefox`, `chrome`, `chromium`, `edge`, `brave`), or type `none` to not open anything automatically.
+
+It then prints the URL and opens your chosen browser:
+
+```
+Arma 3 Mod Cleaner → http://localhost:3000
+```
+
+If you chose `none`, open that URL in your browser manually.
+
+**Skipping the prompt (headless / scripted use):** pass the values as flags or environment variables and the prompt is skipped (it is also skipped automatically when there is no interactive terminal):
+
+```bash
+# flags
+node server.js --port 8080 --browser firefox
+# or environment variables
+MODSCAN_PORT=8080 MODSCAN_BROWSER=none node server.js
+```
 
 ### 3. Configure paths (first run)
 
@@ -175,6 +194,8 @@ Click **Unsubscribe Selected** (or **Unsubscribe All**) and confirm the prompt. 
 | Invalid mod detection | Flags mod folders that have no `meta.cpp` (broken installs) |
 | Folder picker | Browse for paths without typing (requires `zenity` or `kdialog` on Linux) |
 | Auto-reconnect to Steam | If Steam was not running when the server started, it reconnects automatically on the first API call |
+| Choose port & browser | Asks which port and browser to use on every launch |
+| Local-only API guard | The server binds to `127.0.0.1` and rejects any request whose `Host`/`Origin` is not localhost, so other websites can't drive its destructive actions |
 
 ---
 
@@ -188,7 +209,8 @@ ModScan/
 │   └── io.js          # Preset scanning, mod folder ops, ACF editing
 ├── public/
 │   ├── index.html     # UI
-│   └── application.js         # Frontend logic
+│   ├── app.js         # Frontend logic
+│   └── style.css      # Styles
 ├── settings.txt       # Saved paths (auto-generated)
 ├── whitelist.txt      # Whitelisted mods (auto-generated)
 ├── steam_appid.txt    # Tells steamworks.js to use ARMA 3 (107410)

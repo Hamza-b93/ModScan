@@ -46,10 +46,16 @@ function loadSettings() {
     let savedList = '';
     let savedMod  = '';
 
+    // Key-based parse so the file survives reordering, blank lines and new keys.
     if (fs.existsSync(SETTINGS_FILE)) {
-        const lines = fs.readFileSync(SETTINGS_FILE, 'utf-8').split('\n');
-        savedList = (lines[0] || '').split('=').slice(1).join('=').trim();
-        savedMod  = (lines[1] || '').split('=').slice(1).join('=').trim();
+        for (const line of fs.readFileSync(SETTINGS_FILE, 'utf-8').split('\n')) {
+            const eq = line.indexOf('=');
+            if (eq === -1) continue;
+            const key = line.slice(0, eq).trim();
+            const val = line.slice(eq + 1).trim();
+            if      (key === 'listPath') savedList = val;
+            else if (key === 'modPath')  savedMod  = val;
+        }
     }
 
     const d  = defaultPaths();
@@ -156,19 +162,36 @@ async function scanAllMods() {
 
 // ---------- Mod scanning ----------
 
+// Cap concurrent filesystem operations so a large workshop (thousands of
+// files across hundreds of mods) can't exhaust file descriptors (EMFILE).
+function pLimit(max) {
+    let active = 0;
+    const queue = [];
+    const next = () => {
+        if (active >= max || queue.length === 0) return;
+        active++;
+        const { fn, resolve, reject } = queue.shift();
+        fn().then(resolve, reject).finally(() => { active--; next(); });
+    };
+    return fn => new Promise((resolve, reject) => { queue.push({ fn, resolve, reject }); next(); });
+}
+
+const fsLimit = pLimit(32);
+
 async function getDirSize(dir) {
-    let total = 0;
+    let entries;
     try {
-        const entries = await fsP.readdir(dir, { withFileTypes: true });
-        const sizes   = await Promise.all(entries.map(e => {
-            const p = path.join(dir, e.name);
-            if (e.isDirectory()) return getDirSize(p);
-            if (e.isFile())      return fsP.stat(p).then(s => s.size).catch(() => 0);
-            return Promise.resolve(0);
-        }));
-        total = sizes.reduce((a, b) => a + b, 0);
-    } catch (_) {}
-    return total;
+        entries = await fsLimit(() => fsP.readdir(dir, { withFileTypes: true }));
+    } catch (_) {
+        return 0;
+    }
+    const sizes = await Promise.all(entries.map(e => {
+        const p = path.join(dir, e.name);
+        if (e.isDirectory()) return getDirSize(p);
+        if (e.isFile())      return fsLimit(() => fsP.stat(p)).then(s => s.size).catch(() => 0);
+        return Promise.resolve(0);
+    }));
+    return sizes.reduce((a, b) => a + b, 0);
 }
 
 function fmtSize(bytes) {
@@ -196,7 +219,12 @@ async function deleteModFolders(ids) {
 function removeIdsFromAcf(ids) {
     // appworkshop_107410.acf lives two levels above modPath (workshop/content/107410 → workshop/)
     const acfPath = path.join(modPath, '..', '..', 'appworkshop_107410.acf');
-    if (!fs.existsSync(acfPath)) return;
+    if (!fs.existsSync(acfPath)) {
+        console.warn(`[IO] appworkshop_107410.acf not found at ${acfPath} — skipping ACF cleanup. ` +
+                     'Steam may try to re-download the removed mods. Check that the mod folder ' +
+                     'points to steamapps/workshop/content/107410.');
+        return;
+    }
 
     const toRemove = new Set(ids.map(String));
     const lines = fs.readFileSync(acfPath, 'utf-8').split('\n');
@@ -238,28 +266,6 @@ function readWhitelist() {
         if (slash > -1) wl[line.slice(0, slash)] = line.slice(slash + 1).trim();
     }
     return wl;
-}
-
-async function findExtraMods(neededIds, whitelistIds, unsubbed) {
-    if (!modPath || !fs.existsSync(modPath)) return [];
-
-    const all     = fs.readdirSync(modPath, { withFileTypes: true }).filter(e => e.isDirectory()).map(e => e.name);
-    const needed  = new Set(neededIds);
-    const wl      = new Set(whitelistIds);
-    const extras  = all.filter(id => !needed.has(id) && !wl.has(id));
-
-    return Promise.all(extras.map(async id => {
-        const name  = await readModName(id);
-        const bytes = await getDirSize(path.join(modPath, id));
-        return {
-            name,
-            id,
-            bytes,
-            size:    fmtSize(bytes),
-            invalid: !name,
-            unsubbed: unsubbed.has(id),
-        };
-    }));
 }
 
 function addToWhitelist(entries) {
