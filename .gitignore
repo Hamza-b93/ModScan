@@ -145,3 +145,12 @@ vite.config.ts.timestamp-*
 # User-specific runtime files
 settings.txt
 whitelist.txt
+
+# Linux packaging artifacts
+AppDir/
+*.AppImage
+*.snap
+*.flatpak
+.flatpak-builder/
+repo/
+

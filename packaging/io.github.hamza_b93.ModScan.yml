@@ -1,0 +1,23 @@
+app-id: io.github.hamza_b93.ModScan
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
+command: modscan
+
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --filesystem=host
+
+modules:
+  - name: modscan
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 dist/modscan-linux /app/bin/modscan
+      - install -Dm644 packaging/io.github.hamza_b93.ModScan.desktop /app/share/applications/io.github.hamza_b93.ModScan.desktop
+      - install -Dm644 packaging/modscan.svg /app/share/icons/hicolor/scalable/apps/io.github.hamza_b93.ModScan.svg
+    sources:
+      - type: dir
+        path: ..

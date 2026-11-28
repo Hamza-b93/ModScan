@@ -26,20 +26,47 @@ There are two ways to run ModScan: download a pre-built binary (no Node.js neede
 
 No Node.js or git required.
 
-1. Go to the [Releases](https://github.com/Hamza-b93/ModScan/releases) page and download the file for your OS:
-   - **Linux:** `modscan-linux`
+1. Go to the [Releases](https://github.com/Hamza-b93/ModScan/releases) page and download the package or binary for your OS:
+   - **Linux (standalone binary):** `modscan-linux`
+   - **Linux (AppImage):** `ModScan-x86_64.AppImage`
+   - **Linux (Snap):** `modscan_<version>_amd64.snap`
+   - **Linux (Flatpak):** `ModScan-x86_64.flatpak`
    - **Windows:** `modscan-win.exe`
 
-2. **Linux only** — make the file executable:
+2. **Install / prepare:**
+
+   **Linux standalone binary or AppImage:**
    ```bash
-   chmod +x modscan-linux
+   chmod +x modscan-linux            # or ModScan-x86_64.AppImage
    ```
 
-3. Start Steam, then run the binary:
+   **Linux Snap:**
+   ```bash
+   sudo snap install --classic --dangerous modscan_*.snap
+   ```
 
-   **Linux:**
+   **Linux Flatpak:**
+   ```bash
+   flatpak install --user ModScan-x86_64.flatpak
+   ```
+
+3. Start Steam, then run ModScan:
+
+   **Linux standalone binary / AppImage:**
    ```bash
    ./modscan-linux
+   # or
+   ./ModScan-x86_64.AppImage
+   ```
+
+   **Linux Snap:**
+   ```bash
+   modscan
+   ```
+
+   **Linux Flatpak:**
+   ```bash
+   flatpak run io.github.hamza_b93.ModScan
    ```
 
    **Windows:** double-click `modscan-win.exe`, or run it from a terminal.

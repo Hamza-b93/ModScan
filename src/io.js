@@ -5,7 +5,35 @@ const fsP  = require('fs').promises;
 const path = require('path');
 const os   = require('os');
 
-const DATA_DIR = process.pkg ? path.dirname(process.execPath) : path.join(__dirname, '..');
+function resolveDataDir() {
+    if (process.env.MODSCAN_DATA_DIR) {
+        fs.mkdirSync(process.env.MODSCAN_DATA_DIR, { recursive: true });
+        return process.env.MODSCAN_DATA_DIR;
+    }
+    if (process.env.SNAP_USER_DATA) {
+        fs.mkdirSync(process.env.SNAP_USER_DATA, { recursive: true });
+        return process.env.SNAP_USER_DATA;
+    }
+    if (process.env.FLATPAK_ID || process.env.APPIMAGE) {
+        const xdg = process.env.XDG_CONFIG_HOME || path.join(os.homedir(), '.config');
+        const dir = path.join(xdg, 'modscan');
+        fs.mkdirSync(dir, { recursive: true });
+        return dir;
+    }
+
+    const defaultDir = process.pkg ? path.dirname(process.execPath) : path.join(__dirname, '..');
+    try {
+        fs.accessSync(defaultDir, fs.constants.W_OK);
+        return defaultDir;
+    } catch (_) {
+        const xdg = process.env.XDG_CONFIG_HOME || path.join(os.homedir(), '.config');
+        const dir = path.join(xdg, 'modscan');
+        fs.mkdirSync(dir, { recursive: true });
+        return dir;
+    }
+}
+
+const DATA_DIR = resolveDataDir();
 const SETTINGS_FILE = path.join(DATA_DIR, 'settings.txt');
 const WHITELIST_FILE = path.join(DATA_DIR, 'whitelist.txt');
 

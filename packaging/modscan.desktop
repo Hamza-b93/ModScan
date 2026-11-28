@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=ModScan
+GenericName=ARMA 3 Mod Cleaner
+Comment=Scan ARMA 3 launcher presets and bulk-unsubscribe unused Steam Workshop mods
+Exec=modscan
+Icon=modscan
+Terminal=true
+Categories=Utility;Game;
+StartupNotify=false

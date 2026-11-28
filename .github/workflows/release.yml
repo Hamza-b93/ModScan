@@ -34,6 +34,28 @@ jobs:
           npm run build:win
           npm run build:linux
 
+      - name: Build AppImage
+        run: npm run build:appimage
+
+      - name: Set Snap version
+        if: steps.tag_version.outputs.new_tag
+        run: |
+          VERSION="${{ steps.tag_version.outputs.new_tag }}"
+          sed -i "s/^version: .*/version: '${VERSION#v}'/" snap/snapcraft.yaml
+
+      - name: Build Snap
+        id: snap
+        uses: snapcore/action-build@v1
+
+      - name: Stage Snap artifact
+        run: mv "${{ steps.snap.outputs.snap }}" dist/
+
+      - name: Build Flatpak
+        uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: dist/ModScan-x86_64.flatpak
+          manifest-path: packaging/io.github.hamza_b93.ModScan.yml
+
       - name: Create GitHub Release
         if: steps.tag_version.outputs.new_tag
         uses: softprops/action-gh-release@v2
@@ -44,3 +66,6 @@ jobs:
           files: |
             dist/modscan-win.exe
             dist/modscan-linux
+            dist/ModScan-x86_64.AppImage
+            dist/*.snap
+            dist/ModScan-x86_64.flatpak

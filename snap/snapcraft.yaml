@@ -1,0 +1,29 @@
+name: modscan
+base: core22
+version: '1.0.0'
+summary: ARMA 3 Mod Cleaner
+description: |
+  A local web application that scans your ARMA 3 launcher presets, identifies
+  mods you have installed but no longer use in any preset, and lets you
+  unsubscribe and delete them in bulk.
+
+grade: stable
+confinement: classic
+
+apps:
+  modscan:
+    command: bin/modscan
+    desktop: usr/share/applications/modscan.desktop
+
+parts:
+  modscan:
+    plugin: dump
+    source: .
+    organize:
+      dist/modscan-linux: bin/modscan
+      packaging/modscan.desktop: usr/share/applications/modscan.desktop
+      packaging/modscan.svg: usr/share/icons/hicolor/scalable/apps/modscan.svg
+    stage:
+      - bin/modscan
+      - usr/share/applications/modscan.desktop
+      - usr/share/icons/hicolor/scalable/apps/modscan.svg
